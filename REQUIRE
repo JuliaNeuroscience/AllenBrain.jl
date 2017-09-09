@@ -1,1 +1,8 @@
 julia 0.6
+Requests
+JSON
+Colors
+FixedPointNumbers
+StaticArrays
+IndirectArrays
+GLVisualize
