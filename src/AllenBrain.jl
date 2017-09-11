@@ -2,10 +2,11 @@ __precompile__()
 
 module AllenBrain
 
-using JSON, LightGraphs, StaticArrays, IndirectArrays, AxisArrays
+using Requests, JSON, LightGraphs, StaticArrays, IndirectArrays, AxisArrays
 using Colors, FixedPointNumbers, GLVisualize
 
-export colorize, colorize!, findvertices, ontology, structureids, visualize_volume
+export colorize, colorize!, download_projection, findvertices,
+       ontology, structureids, visualize_volume
 
 const mousedir = joinpath(dirname(@__DIR__), "data", "mouse")
 
@@ -18,5 +19,6 @@ end
 
 include("ontology.jl")
 include("visualize.jl")
+include("projections.jl")
 
 end # module
