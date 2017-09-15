@@ -5,5 +5,5 @@ Colors
 FixedPointNumbers
 StaticArrays
 IndirectArrays
-GLVisualize
 LightGraphs
+Requires

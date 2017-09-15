@@ -41,9 +41,11 @@ function colorize!(dest::AbstractArray{To}, ano::AbstractArray{Ti},
     IndirectArray(dest, colorlist)
 end
 
-function visualize_volume(volumedata)
-    window = glscreen()
-    volume = visualize(volumedata, :absorption)
-    _view(volume, window)
-    @schedule renderloop(window)
+@require GLVisualize begin
+    function visualize_volume(volumedata)
+        window = GLVisualize.glscreen()
+        volume = GLVisualize.visualize(volumedata, :absorption)
+        GLVisualize._view(volume, window)
+        @schedule GLVisualize.renderloop(window)
+    end
 end
