@@ -21,5 +21,6 @@ end
 include("ontology.jl")
 include("visualize.jl")
 include("projections.jl")
+include("genes.jl")
 
 end # module
