@@ -41,3 +41,55 @@ Return the structure_id associated with each vertex in `v`.
 structureids(v, vertexlist) = map(i->vertexlist[i]["id"], v)
 structureids(pat::Regex, vertexlist, field="acronym") =
     structureids(findvertices(pat, vertexlist, field), vertexlist)
+
+function annotation(resolution=50; species="mouse")
+    anno = load(dataset(species, "annotation_"*string(resolution)))
+    # The NRRD header is incorrect, we should fix the orientation
+    r = resolution*μm
+    return AxisArray(anno.data, (:P, :I, :R), (r, r, r))
+end
+
+function download_annotation(resolution=50)
+    dest = joinpath(mousedir, "annotation_$resolution.nrrd")
+    download("http://download.alleninstitute.org/informatics-archive/current-release/mouse_ccf/annotation/ccf_2016/annotation_$resolution.nrrd", dest)
+end
+
+"""
+    bbleft, bbright = boundingbox(f, annotated)
+
+Return the BoundingBoxes encapsulating structure(s) for which
+`f(annotated[i])` returns `true`, separately for the two hemispheres
+of the brain. `annotated` is a labeled volume. Units of `bb` are
+microns.
+"""
+function boundingbox(f, annotated)
+    scalebb(bx, px) = BoundingBox(map((iv, s) -> minimum(iv)*s .. maximum(iv)*s, bx.intervals, ps))
+    local bb
+    isfirst = true
+    # Search only the left half of the volume
+    inds = mapfilter(i->first(i):(first(i)+last(i))÷2, indices(annotated),
+                     Axis{:R}, axes(annotated))
+    for i in CartesianRange(inds)
+        if f(annotated[i])
+            if isfirst
+                bb = BoundingBox(i, i)
+                isfirst = false
+            else
+                bb |= i
+            end
+        end
+    end
+    dim = find(x->x==:R, axisnames(annotated))[1]
+    bbr = BoundingBox(ntuple(ndims(annotated)) do d
+        iv = bb.intervals[d]
+        if d == dim
+            id = indices(annotated, d)
+            l = first(id) + last(id)
+            l-maximum(iv) .. l-minimum(iv)
+        else
+            iv
+        end
+    end)
+    ps = pixelspacing(annotated)
+    scalebb(bb, ps), scalebb(bbr, ps)
+end
