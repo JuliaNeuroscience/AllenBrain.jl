@@ -8,3 +8,4 @@ IndirectArrays
 LightGraphs
 Requires
 Unitful
+NRRD
