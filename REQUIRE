@@ -7,3 +7,4 @@ StaticArrays
 IndirectArrays
 LightGraphs
 Requires
+Unitful
