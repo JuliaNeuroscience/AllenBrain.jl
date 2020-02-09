@@ -40,12 +40,3 @@ function colorize!(dest::AbstractArray{To}, ano::AbstractArray{Ti},
     end
     IndirectArray(dest, colorlist)
 end
-
-@require GLVisualize begin
-    function visualize_volume(volumedata)
-        window = GLVisualize.glscreen()
-        volume = GLVisualize.visualize(volumedata, :absorption)
-        GLVisualize._view(volume, window)
-        @schedule GLVisualize.renderloop(window)
-    end
-end

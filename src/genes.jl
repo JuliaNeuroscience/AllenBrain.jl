@@ -1,11 +1,11 @@
 # function query(key::AbstractString, fieldname="acronym")
-#     rq = Requests.get("http://api.brain-map.org/api/v2/data/SectionDataSet/query.json?criteria=products[id\$eq1],genes[$fieldname\$eq'$key']&include=genes,section_images")
+#     rq = HTTP.request("GET", "http://api.brain-map.org/api/v2/data/SectionDataSet/query.json?criteria=products[id\$eq1],genes[$fieldname\$eq'$key']&include=genes,section_images")
 # end
 
 const planedict = Dict("coronal"=>1, "sagittal"=>2)
 
 function query_insitu(key::AbstractString; plane="coronal", fieldname="acronym")
-    rq = Requests.get("http://api.brain-map.org/api/v2/data/SectionDataSet/query.json?criteria=products[id\$eq1],genes[$fieldname\$eq'$key']&include=section_images,alignment3d,section_images(alignment2d)")
+    rq = HTTP.request("GET", "http://api.brain-map.org/api/v2/data/SectionDataSet/query.json?criteria=products[id\$eq1],genes[$fieldname\$eq'$key']&include=section_images,alignment3d,section_images(alignment2d)")
     data = JSON.parse(String(rq.data))
     planeid = planedict[plane]
     for sectiondataset in data["msg"]

@@ -1,4 +1,4 @@
-using Requests, JSON
+using HTTP, JSON
 
 const mousedir = joinpath(dirname(@__DIR__), "data", "mouse")
 if !isdir(mousedir)
@@ -9,7 +9,7 @@ sg = joinpath(mousedir, "structure_graph.json")
 genes = joinpath(mousedir, "genes.json")
 
 if !isfile(sg)
-    rq = Requests.get("http://api.brain-map.org/api/v2/structure_graph_download/1.json")
+    rq = HTTP.request("GET", "http://api.brain-map.org/api/v2/structure_graph_download/1.json")
     data = JSON.parse(String(rq.data))
     hierarchy = data["msg"][1]
 
@@ -20,7 +20,7 @@ end
 
 if !isfile(genes)
     info("Downloading genes database. This will take a while, but only needs to be done once.")
-    rq = Requests.get("http://api.brain-map.org/api/v2/data/Gene/query.json?criteria=products[id\$eq1]"; query=Dict("num_rows"=>19991))
+    rq = HTTP.request("GET", "http://api.brain-map.org/api/v2/data/Gene/query.json?criteria=products[id\$eq1]"; query=Dict("num_rows"=>19991))
     data = JSON.parse(String(rq.data))
     g = data["msg"]
     open(genes, "w") do io
