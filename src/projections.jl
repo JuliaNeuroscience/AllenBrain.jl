@@ -1,6 +1,6 @@
 function query_projection(id)
     rq = HTTP.request("GET", "http://api.brain-map.org/api/v2/data/WellKnownFile/query.json?criteria=well_known_file_type[name\$eq'ImagesResampledTo25MicronARA'][attachable_id\$eq$id]")
-    data = JSON.parse(String(rq.data))
+    data = JSON.parse(String(rq.body))
     data["msg"][1]
 end
 

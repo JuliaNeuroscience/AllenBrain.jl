@@ -6,7 +6,7 @@ const planedict = Dict("coronal"=>1, "sagittal"=>2)
 
 function query_insitu(key::AbstractString; plane="coronal", fieldname="acronym")
     rq = HTTP.request("GET", "http://api.brain-map.org/api/v2/data/SectionDataSet/query.json?criteria=products[id\$eq1],genes[$fieldname\$eq'$key']&include=section_images,alignment3d,section_images(alignment2d)")
-    data = JSON.parse(String(rq.data))
+    data = JSON.parse(String(rq.body))
     planeid = planedict[plane]
     for sectiondataset in data["msg"]
         if sectiondataset["plane_of_section_id"] == planeid
@@ -66,23 +66,6 @@ function download_insitu_images(sectiondataset::Dict, bb::BoundingBox, dirname; 
                      "boundingbox"=>bb))
 end
 
-    # showall(filenames)
-    # showall(slicepos)
-    # sz = imagesize(joinpath(dirname, filenames[1]))
-    # for i = 2:length(filenames)
-    #     sz = map(max, sz, imagesize(joinpath(dirname, filenames[i])))
-    # end
-    # img2d = load(joinpath(dirname, first(filenames)))
-    # img = similar(img2d, sz[2], sz[1], length(filenames))
-    # fill!(img, zero(eltype(img)))
-    # for i = 1:length(filenames)
-    #     fn = joinpath(dirname, filenames[i])
-    #     if imagesize(fn) == sz
-    #         img[:,:,i] = load(fn)
-    #     end
-    # end
-    # resp = median(diff(slicepos))
-    # FileIO.save(joinpath(dirname, "merged.nrrd"), AxisArray(img, (:P, :I, :R), (resp, res, res)))
 
 # function download_insitu_images(genekey::AbstractString, x, y, dirname=genekey; plane="coronal", fieldname="acronym", downsample=0)
 #     if !isdir(dirname)

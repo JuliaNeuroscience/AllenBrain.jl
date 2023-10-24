@@ -40,3 +40,5 @@ function colorize!(dest::AbstractArray{To}, ano::AbstractArray{Ti},
     end
     IndirectArray(dest, colorlist)
 end
+
+function visualize_volume end

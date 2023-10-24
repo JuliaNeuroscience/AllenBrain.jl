@@ -3,11 +3,9 @@ module AllenBrain
 using Statistics
 using JSON, LightGraphs, IndirectArrays, AxisArrays, OffsetArrays
 using StaticArrays, CoordinateTransformations
-using ImageMagick, ImageTransformations, ImageCore, Interpolations
-using ColorVectorSpace
+using ImageTransformations, ImageCore, Interpolations
 using IntervalSets, ProgressMeter, FileIO
 using Unitful: μm
-using Requires
 import HTTP
 
 export #
@@ -42,7 +40,7 @@ function dataset(species, category)
         species == "mouse" && return joinpath(mousedir, "structure_graph.json")
     elseif startswith(category, "annotation") && species == "mouse"
         if !endswith(category, ".nrrd")
-            if !ismatch(r"[0-9]$", category)
+            if match(r"[0-9]$", category) === nothing
                 category = category*"_25"
             end
             category = category*".nrrd"
@@ -69,18 +67,5 @@ include("images.jl")
 include("projections.jl")
 include("genes.jl")
 include("visualize.jl")
-
-function __init__()
-    # NOTE: this was written against GLVisualize which is deprecated for
-    # Makie. The code below likely needs updating.
-    @require Makie="ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a" begin
-        function visualize_volume(volumedata)
-            window = Makie.glscreen()
-            volume = Makie.visualize(volumedata, :absorption)
-            Makie._view(volume, window)
-            @schedule Makie.renderloop(window)
-        end
-    end
-end
 
 end # module
