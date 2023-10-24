@@ -19,7 +19,7 @@ if !isfile(sg)
 end
 
 if !isfile(genes)
-    info("Downloading genes database. This will take a while, but only needs to be done once.")
+    @info "Downloading genes database. This will take a while, but only needs to be done once."
     rq = HTTP.request("GET", "http://api.brain-map.org/api/v2/data/Gene/query.json?criteria=products[id\$eq1]"; query=Dict("num_rows"=>19991))
     data = JSON.parse(String(rq.body))
     g = data["msg"]
