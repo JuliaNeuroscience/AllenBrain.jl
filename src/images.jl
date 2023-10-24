@@ -159,9 +159,3 @@ function isinrange(idx, pos, x, Δx)
     1 <= idx <= length(pos) || return false
     abs(pos[idx] - x) <= Δx
 end
-
-function imagesize(filename)
-    wand = ImageMagick.MagickWand()
-    ImageMagick.readimage(wand, filename)
-    size(wand)
-end

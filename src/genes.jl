@@ -66,23 +66,6 @@ function download_insitu_images(sectiondataset::Dict, bb::BoundingBox, dirname; 
                      "boundingbox"=>bb))
 end
 
-    # showall(filenames)
-    # showall(slicepos)
-    # sz = imagesize(joinpath(dirname, filenames[1]))
-    # for i = 2:length(filenames)
-    #     sz = map(max, sz, imagesize(joinpath(dirname, filenames[i])))
-    # end
-    # img2d = load(joinpath(dirname, first(filenames)))
-    # img = similar(img2d, sz[2], sz[1], length(filenames))
-    # fill!(img, zero(eltype(img)))
-    # for i = 1:length(filenames)
-    #     fn = joinpath(dirname, filenames[i])
-    #     if imagesize(fn) == sz
-    #         img[:,:,i] = load(fn)
-    #     end
-    # end
-    # resp = median(diff(slicepos))
-    # FileIO.save(joinpath(dirname, "merged.nrrd"), AxisArray(img, (:P, :I, :R), (resp, res, res)))
 
 # function download_insitu_images(genekey::AbstractString, x, y, dirname=genekey; plane="coronal", fieldname="acronym", downsample=0)
 #     if !isdir(dirname)
