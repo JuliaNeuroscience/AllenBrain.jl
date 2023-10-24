@@ -6,7 +6,7 @@ const planedict = Dict("coronal"=>1, "sagittal"=>2)
 
 function query_insitu(key::AbstractString; plane="coronal", fieldname="acronym")
     rq = HTTP.request("GET", "http://api.brain-map.org/api/v2/data/SectionDataSet/query.json?criteria=products[id\$eq1],genes[$fieldname\$eq'$key']&include=section_images,alignment3d,section_images(alignment2d)")
-    data = JSON.parse(String(rq.data))
+    data = JSON.parse(String(rq.body))
     planeid = planedict[plane]
     for sectiondataset in data["msg"]
         if sectiondataset["plane_of_section_id"] == planeid

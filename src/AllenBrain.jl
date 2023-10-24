@@ -40,7 +40,7 @@ function dataset(species, category)
         species == "mouse" && return joinpath(mousedir, "structure_graph.json")
     elseif startswith(category, "annotation") && species == "mouse"
         if !endswith(category, ".nrrd")
-            if !ismatch(r"[0-9]$", category)
+            if match(r"[0-9]$", category) === nothing
                 category = category*"_25"
             end
             category = category*".nrrd"

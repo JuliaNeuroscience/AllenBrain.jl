@@ -16,7 +16,7 @@ end
 Return the structure graph `g` and list `vertexlist` of metadata for nodes.
 """
 function ontology(filename)
-    str = readstring(dataset(filename, "ontology"))
+    str = read(dataset(filename, "ontology"), String)
     hierarchy = JSON.parse(str)
     g = DiGraph()
     add_vertex!(g)  # for the root node
@@ -49,9 +49,9 @@ function annotation(resolution=50; species="mouse")
     return AxisArray(anno.data, (:P, :I, :R), (r, r, r))
 end
 
-function download_annotation(resolution=50)
+function download_annotation(resolution=50; species="mouse", year=2016)
     dest = joinpath(mousedir, "annotation_$resolution.nrrd")
-    download("http://download.alleninstitute.org/informatics-archive/current-release/mouse_ccf/annotation/ccf_2016/annotation_$resolution.nrrd", dest)
+    download("http://download.alleninstitute.org/informatics-archive/current-release/$(species)_ccf/annotation/ccf_$year/annotation_$resolution.nrrd", dest)
 end
 
 """

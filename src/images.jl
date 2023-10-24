@@ -11,7 +11,7 @@ function query_reference2image(sectiondataset::Dict, x, y, z)
     xr, yr, zr = inmicrons(x), inmicrons(y), inmicrons(z)
     str = "http://api.brain-map.org/api/v2/reference_to_image/$refspace.json?x=$xr&y=$yr&z=$zr&section_data_set_ids=$id"
     rq = HTTP.request("GET", str)
-    data = JSON.parse(String(rq.data))
+    data = JSON.parse(String(rq.body))
     data["msg"][1]["image_sync"]
 end
 
@@ -24,7 +24,7 @@ return the posterior, inferior, right coordinates `p`, `i`, `r` in microns.
 function query_image2reference(sectionimageid::Integer, x, y)
     str = "http://api.brain-map.org/api/v2/image_to_reference/$sectionimageid.json?x=$x&y=$y"
     rq = HTTP.request("GET", str)
-    data = JSON.parse(String(rq.data))
+    data = JSON.parse(String(rq.body))
     ret = data["msg"]["image_to_reference"]
     ret["x"], ret["y"], ret["z"]
 end
