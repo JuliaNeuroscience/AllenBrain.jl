@@ -43,22 +43,70 @@ end
 
 bucket(manifest::AWSManifest) = startswith(manifest.resource_uri, "s3://") ? split(manifest.resource_uri, "/")[3] : error("Not an S3 URI: ", manifest.resource_uri)
 
-function download_dir(manifest::AWSManifest, dir::AWSDir, to::AbstractString; config=allen_config)
-    from = S3Path(manifest.resource_uri * dir.relative_path; config)
+"""
+    download_dir(manifest, relative_path, to; [config])
+
+Download Allen Brain data form `manifest.resource_uri * relative_path` to `to`.
+
+# Positional arguments:
+
+- `manifest`: Allen Brain manifest data
+
+    You can get with call `version = "20231215"; manifest = awsmanifest(version)`.
+
+- `relative_path`: Relative path of the data you want to download. Full path will be constructed with `manifest.resource_uri * relative_path`.
+
+- `to` : Download path and file name
+
+# Keyword arguments:
+
+- `config`: configuratoin to connect Allen Brain dataset location in AWS.
+
+
+# Examples
+To download data with feature_matrix_label = "WMB-10Xv2-TH" which is in dataset_label="WMB-10Xv2"
+
+```jldoctest
+
+julia> expression_matrices = manifest.file_listing["WMB-10Xv2"]["expression_matrices"]
+
+Dict{String, Any} with 10 entries:
+
+  "WMB-10Xv2-OLF"         => Dict{String, Any}("raw"=>Dict{String, Any}("files"=>Dict{String, Any}("h5ad"=>Dict{String, Any}("relative_path"=>"expression_matrices/WMB-10Xv2/2…
+
+  ...
+
+  "WMB-10Xv2-Isocortex-4" => Dict{String, Any}("raw"=>Dict{String, Any}("files"=>Dict{String, Any}("h5ad"=>Dict{String, Any}("relative_path"=>"expression_matrices/WMB-10Xv2/2…
+
+julia> feature_matrix_label = "WMB-10Xv2-TH"
+
+"WMB-10Xv2-TH"
+
+julia> rpath = expression_matrices[feature_matrix_label]["log2"]["files"]["h5ad"]["relative_path"]
+                                                       # for raw data, use "raw" instead of "log2"
+
+"expression_matrices/WMB-10Xv2/20230630/WMB-10Xv2-TH-log2.h5ad"
+
+julia> download_base = joinpath(datapath,"AllenBrain")
+
+"/storage1/fs1/holy/Active/username/work/Data/AllenBrain"
+
+julia> local_path = joinpath(download_base, split(rpath,"/")... )
+
+"/storage1/fs1/holy/Active/username/work/Data/AllenBrain/expression_matrices/WMB-10Xv2/20230630/WMB-10Xv2-TH-log2.h5ad"
+
+julia> AllenBrain.download_dir(manifest, rpath, local_path)
+
+from = p"s3://allen-brain-cell-atlas/expression_matrices/WMB-10Xv2/20230630/WMB-10Xv2-TH-log2.h5ad"
+
+to = "/storage1/fs1/holy/Active/username/work/Data/AllenBrain/expression_matrices/WMB-10Xv2/20230630/WMB-10Xv2-TH-log2.h5ad"
+
+```
+"""
+function download_dir(manifest::AWSManifest, relative_path::String, to::AbstractString; config=allen_config)
+    from = S3Path(manifest.resource_uri * relative_path; config)
     @show from to
-    sync(from, to)
+    pt, _ = splitdir(to)
+    isdir(pt) || mkdir(Path(pt), recursive=true, exist_ok=true)
+    sync(from, Path(to))
 end
-
-function download_dirs(f, manifest::AWSManifest, to)
-    if !isdir(to)
-        mkpath(to)
-    end
-    for (relpath, contents) in manifest.directory_listing
-        for (name, dir) in contents
-            f(name) || continue
-            download_dir(manifest, dir, joinpath(to, relpath))
-        end
-    end
-end
-download_metadatas(manifest::AWSManifest, to) = download_dirs(x -> x == "metadata", manifest, to)
-

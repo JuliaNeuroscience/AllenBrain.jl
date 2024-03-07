@@ -30,6 +30,7 @@ export #
     sectionimage,
     download_insitu_images,
     splice_sectionimages,
+    download_dir,
     # genes
     query_insitu,
     # visualization
