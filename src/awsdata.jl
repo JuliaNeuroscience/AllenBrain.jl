@@ -35,6 +35,25 @@ StructTypes.StructType(::Type{AWSDir}) = StructTypes.Struct()
 StructTypes.StructType(::Type{AWSDirs}) = StructTypes.Struct()
 StructTypes.StructType(::Type{AWSManifest}) = StructTypes.Struct()
 
+"""
+    awsmanifest(version)
+
+Download Allen Brain manifest data
+
+# Positional arguments:
+
+- `version`: version number of Allen Brain Dataset
+
+# Examples
+
+```jldoctest
+julia> version = "20231215"
+"20231215"
+
+julia> manifest = awsmanifest(version)
+AWSManifest(version = "20231215", length(directory_listing) = 18, length(file_listing) = 18)
+```
+"""
 function awsmanifest(version)
     url = "https://allen-brain-cell-atlas.s3-us-west-2.amazonaws.com/releases/$version/manifest.json"
     rq = HTTP.request("GET", url)
@@ -46,7 +65,7 @@ bucket(manifest::AWSManifest) = startswith(manifest.resource_uri, "s3://") ? spl
 """
     download_dir(manifest, relative_path, to; config=AWSConfig(; creds=nothing, region="us-west-2"))
 
-Download Allen Brain data form `manifest.resource_uri * relative_path` to `to`.
+Download Allen Brain data from `manifest.resource_uri * relative_path` to `to`.
 
 # Positional arguments:
 
@@ -62,48 +81,38 @@ Download Allen Brain data form `manifest.resource_uri * relative_path` to `to`.
 
 
 # Examples
-To download data with feature_matrix_label = "WMB-10Xv2-TH" which is in dataset_label="WMB-10Xv2"
+To download data with `feature_matrix_label = "WMB-10Xv2-TH"` which is in `dataset_label="WMB-10Xv2"`
 
 ```jldoctest
-
 julia> expression_matrices = manifest.file_listing["WMB-10Xv2"]["expression_matrices"]
-
 Dict{String, Any} with 10 entries:
-
   "WMB-10Xv2-OLF"         => Dict{String, Any}("raw"=>Dict{String, Any}("files"=>Dict{String, Any}("h5ad"=>Dict{String, Any}("relative_path"=>"expression_matrices/WMB-10Xv2/2…
-
   ...
-
   "WMB-10Xv2-Isocortex-4" => Dict{String, Any}("raw"=>Dict{String, Any}("files"=>Dict{String, Any}("h5ad"=>Dict{String, Any}("relative_path"=>"expression_matrices/WMB-10Xv2/2…
 
 julia> feature_matrix_label = "WMB-10Xv2-TH"
-
 "WMB-10Xv2-TH"
 
 julia> rpath = expression_matrices[feature_matrix_label]["log2"]["files"]["h5ad"]["relative_path"]
-                                                       # for raw data, use "raw" instead of "log2"
+                                                      # for raw data, use "raw" instead of "log2"
 
 "expression_matrices/WMB-10Xv2/20230630/WMB-10Xv2-TH-log2.h5ad"
 
 julia> download_base = joinpath(datapath,"AllenBrain")   # assumes `datapath` is already defined as a path on your local machine
-
 "/storage1/fs1/holy/Active/username/work/Data/AllenBrain"
 
 julia> local_path = joinpath(download_base, split(rpath,"/")... )
-
 "/storage1/fs1/holy/Active/username/work/Data/AllenBrain/expression_matrices/WMB-10Xv2/20230630/WMB-10Xv2-TH-log2.h5ad"
 
 julia> AllenBrain.download_dir(manifest, rpath, local_path)
-
-from = p"s3://allen-brain-cell-atlas/expression_matrices/WMB-10Xv2/20230630/WMB-10Xv2-TH-log2.h5ad"
-
-to = "/storage1/fs1/holy/Active/username/work/Data/AllenBrain/expression_matrices/WMB-10Xv2/20230630/WMB-10Xv2-TH-log2.h5ad"
+Downloading from s3://allen-brain-cell-atlas/expression_matrices/WMB-10Xv2/20230630/WMB-10Xv2-TH-log2.h5ad
+to /storage1/fs1/holy/Active/username/work/Data/AllenBrain/expression_matrices/WMB-10Xv2/20230630/WMB-10Xv2-TH-log2.h5ad
 
 ```
 """
 function download_dir(manifest::AWSManifest, relative_path::String, to::AbstractString; config=allen_config)
     from = S3Path(manifest.resource_uri * relative_path; config)
-    @show from to
+    print("Downloading from $(Path(from))\n to $(to)")
     pt, _ = splitdir(to)
     isdir(pt) || mkdir(Path(pt), recursive=true, exist_ok=true)
     sync(from, Path(to))

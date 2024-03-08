@@ -34,6 +34,7 @@ Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 AllenBrainMakieExt = "Makie"
 
 [compat]
+AWSS3 = "0.10, 0.11"
 AxisArrays = "0.4"
 CoordinateTransformations = "0.6"
 FileIO = "1"
