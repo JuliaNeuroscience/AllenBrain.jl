@@ -50,9 +50,7 @@ Download Allen Brain data form `manifest.resource_uri * relative_path` to `to`.
 
 # Positional arguments:
 
-- `manifest`: Allen Brain manifest data
-
-    You can get with call `version = "20231215"; manifest = awsmanifest(version)`.
+- `manifest`: Allen Brain manifest data (see [`awsmanifest`](@ref))
 
 - `relative_path`: Relative path of the data you want to download. Full path will be constructed with `manifest.resource_uri * relative_path`.
 
