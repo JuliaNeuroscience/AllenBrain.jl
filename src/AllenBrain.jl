@@ -2,6 +2,8 @@ module AllenBrain
 
 using Statistics
 using JSON, LightGraphs, IndirectArrays, AxisArrays, OffsetArrays
+using JSON3, StructTypes
+using FilePathsBase
 using StaticArrays, CoordinateTransformations
 using ImageTransformations, ImageCore, Interpolations
 using IntervalSets, ProgressMeter, FileIO
@@ -12,6 +14,8 @@ export #
     # basic types
     BoundingBox,
     buffer,
+    # AWS data
+    awsmanifest,
     # ontology
     ontology,
     findvertices,
@@ -26,6 +30,7 @@ export #
     sectionimage,
     download_insitu_images,
     splice_sectionimages,
+    download_dir,
     # genes
     query_insitu,
     # visualization
@@ -62,6 +67,7 @@ inmicrons(x::Real) = x
 inmicrons(x) = x/(1μm)
 
 include("types.jl")
+include("awsdata.jl")
 include("ontology.jl")
 include("images.jl")
 include("projections.jl")
