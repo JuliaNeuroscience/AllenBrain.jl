@@ -85,7 +85,7 @@ julia> rpath = expression_matrices[feature_matrix_label]["log2"]["files"]["h5ad"
 
 "expression_matrices/WMB-10Xv2/20230630/WMB-10Xv2-TH-log2.h5ad"
 
-julia> download_base = joinpath(datapath,"AllenBrain")
+julia> download_base = joinpath(datapath,"AllenBrain")   # assumes `datapath` is already defined as a path on your local machine
 
 "/storage1/fs1/holy/Active/username/work/Data/AllenBrain"
 
