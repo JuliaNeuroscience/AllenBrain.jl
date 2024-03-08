@@ -60,7 +60,7 @@ Download Allen Brain data form `manifest.resource_uri * relative_path` to `to`.
 
 # Keyword arguments:
 
-- `config`: configuratoin to connect Allen Brain dataset location in AWS.
+- `config`: AWS configuration for accessing the service
 
 
 # Examples
