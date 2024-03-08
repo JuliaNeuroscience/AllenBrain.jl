@@ -44,7 +44,7 @@ end
 bucket(manifest::AWSManifest) = startswith(manifest.resource_uri, "s3://") ? split(manifest.resource_uri, "/")[3] : error("Not an S3 URI: ", manifest.resource_uri)
 
 """
-    download_dir(manifest, relative_path, to; [config])
+    download_dir(manifest, relative_path, to; config=AWSConfig(; creds=nothing, region="us-west-2"))
 
 Download Allen Brain data form `manifest.resource_uri * relative_path` to `to`.
 
