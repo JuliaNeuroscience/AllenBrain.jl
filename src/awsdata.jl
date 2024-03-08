@@ -54,7 +54,7 @@ Download Allen Brain data form `manifest.resource_uri * relative_path` to `to`.
 
 - `relative_path`: Relative path of the data you want to download. Full path will be constructed with `manifest.resource_uri * relative_path`.
 
-- `to` : Download path and file name
+- `to` : local path (folder and file name) to which the download will be saved
 
 # Keyword arguments:
 
