@@ -1,7 +1,7 @@
 module AllenBrain
 
 using Statistics
-using JSON, LightGraphs, IndirectArrays, AxisArrays, OffsetArrays
+using JSON, Graphs, IndirectArrays, AxisArrays, OffsetArrays
 using JSON3, StructTypes
 using FilePathsBase
 using StaticArrays, CoordinateTransformations
